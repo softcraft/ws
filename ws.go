@@ -22,12 +22,19 @@ func StartServer(routes []Route) {
 		rtr.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
 			r.ParseMultipartForm(0)
 
-			status, response := route.Handler(r.Form)
-			jsonResponse, _ := json.Marshal(response)
+			if r.FormValue("access_token") != os.Getenv("ACCESS_TOKEN") {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusUnauthorized)
+				authErr, _ := json.Marshal(map[string]string{"error": "Incorrect access token provided"})
+				w.Write(authErr)
+			} else {
+				status, response := route.Handler(r.Form)
+				jsonResponse, _ := json.Marshal(response)
 
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(status)
-			w.Write(jsonResponse)
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(status)
+				w.Write(jsonResponse)
+			}
 
 		}).Methods(route.Method)
 	}
