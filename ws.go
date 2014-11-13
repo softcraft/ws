@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-type Handler func(url.Values) map[string]interface{}
+type Handler func(url.Values) (int, interface{})
 type Route struct {
 	Method  string
 	Path    string
@@ -21,10 +21,14 @@ func StartServer(routes []Route) {
 	for _, route := range routes {
 		rtr.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
 			r.ParseMultipartForm(0)
+
+			status, response := route.Handler(r.Form)
+			jsonResponse, _ := json.Marshal(response)
+
 			w.Header().Set("Content-Type", "application/json")
-			rep, _ := json.Marshal(route.Handler(r.Form))
-			//validate error here
-			w.Write(rep)
+			w.WriteHeader(status)
+			w.Write(jsonResponse)
+
 		}).Methods(route.Method)
 	}
 
