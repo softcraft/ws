@@ -2,7 +2,6 @@ package ws
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"net/url"
@@ -21,25 +20,16 @@ func StartServer(routes []Route) {
 
 	for _, route := range routes {
 		rtr.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
-			r.ParseMultipartForm(264)
+			r.ParseMultipartForm(0)
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, parse(route.Handler(r.Form)))
-			return
+			rep, _ := json.Marshal(route.Handler(r.Form))
+			//validate error here
+			w.Write(rep)
 		}).Methods(route.Method)
 	}
 
 	http.Handle("/", rtr)
 	http.ListenAndServe(getPort(), nil)
-}
-
-func parse(m map[string]interface{}) (s string) {
-	b, err := json.Marshal(m)
-	if err != nil {
-		s = ""
-		return
-	}
-	s = string(b)
-	return
 }
 
 func getPort() string {
