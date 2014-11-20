@@ -8,12 +8,7 @@ import (
 
 type handler func(w http.ResponseWriter, r *http.Request)
 
-func Start(path string, handler handler) {
-	var port = ":" + os.Getenv("PORT")
-	if port == ":" {
-		port = ":8181"
-	}
-
+func Start(path string, port string, handler handler) {
 	http.HandleFunc(path, Authorize(handler))
 	http.ListenAndServe(port, nil)
 }
