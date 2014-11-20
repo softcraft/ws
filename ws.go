@@ -37,6 +37,7 @@ func Authorize(f handler) handler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.FormValue("access_token") != os.Getenv("ACCESS_TOKEN") {
 			w.Header().Set("Content-Type", "application/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.WriteHeader(http.StatusUnauthorized)
 			authErr, _ := json.Marshal(map[string]string{"error": "Incorrect access token provided"})
 			w.Write(authErr)
