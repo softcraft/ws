@@ -30,7 +30,7 @@ func Error(w http.ResponseWriter, status int, err string) {
 
 func Authorize(f handler) handler {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "http://taxagdl.com")
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == "OPTIONS" {
