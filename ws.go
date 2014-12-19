@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 )
@@ -47,4 +48,15 @@ func Authorize(f handler) handler {
 		}
 		f(w, r)
 	}
+}
+
+func Execute(desc string, f func() error) {
+	go func() {
+		err := f()
+		if err != nil {
+			LogError(errors.New(desc + " : " + err.Error()))
+		} else {
+			LogDebug(desc)
+		}
+	}()
 }
