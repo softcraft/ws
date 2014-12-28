@@ -37,6 +37,7 @@ func Authorize(f handler) handler {
 		if r.Method == "OPTIONS" {
 			w.Header().Set("Allow", "GET,POST,PUT,DELETE,OPTIONS")
 			w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 			return
 		}
 
