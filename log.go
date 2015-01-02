@@ -34,3 +34,11 @@ func LogDebug(msg string) {
 		rollbar.Message(rollbar.DEBUG, msg)
 	}
 }
+
+func LogWarn(msg string) {
+	if rollbar.Token == "" {
+		fmt.Println("WARN: " + msg)
+	} else {
+		rollbar.Message(rollbar.WARN, msg)
+	}
+}
